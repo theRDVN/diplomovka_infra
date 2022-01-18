@@ -25,29 +25,38 @@ resource "google_compute_instance" "diplomovka_master"{
     }
 }
 
-resource "google_compute_instance" "diplomovka_minion"{
-    name = "diplomovka-app"
-    description = "Vytvori CentOS Salt-minion server"
-    zone = "europe-west1-b"
-    # hostname = "diplomovka-app"
-    project = "diplomovka-334620"
+# resource "google_compute_instance" "diplomovka_minion"{
+#     name = "diplomovka-app"
+#     description = "Vytvori CentOS Salt-minion server"
+#     zone = "europe-west1-b"
+#     # hostname = "diplomovka-app"
+#     project = "diplomovka-334620"
 
-    machine_type = "e2-medium"
+#     machine_type = "e2-medium"
 
-    tags = ["saltminion", "appserver", "centos"]
+#     tags = ["saltminion", "appserver", "centos"]
 
-    boot_disk {
-      initialize_params {
-          image = "centos-cloud/centos-8"
-          size = "20"
-      }
-    }
+#     boot_disk {
+#       initialize_params {
+#           image = "centos-cloud/centos-8"
+#           size = "20"
+#       }
+#     }
 
-    network_interface {
-      network = "default"
-      access_config {
-        nat_ip = "${google_compute_address.appserver-static-ip.address}"
-      }
-      network_ip = "10.132.0.4"
-    }
+#     network_interface {
+#       network = "default"
+#       access_config {
+#         nat_ip = "${google_compute_address.appserver-static-ip.address}"
+#       }
+#       network_ip = "10.132.0.4"
+#     }
+# }
+
+module "minion" {
+  source = "./modules/minion"
+
+  instance_count = "${var.instanceCount}"
+
+  saltMaster = "${var.saltMaster}"
+  saltEnv    = "${var.saltEnv}"
 }
