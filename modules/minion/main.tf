@@ -1,5 +1,5 @@
-resource "template_file" "install_salt_minion" {
-  template = "${file("./scripts/install-salt-centos.sh.tpl")}"
+data "template_file" "install_salt_minion" {
+  template = "${file("./scripts/install-salt-centos.sh")}"
   count    = "${var.instance_count}"
 
   vars = {
@@ -21,9 +21,7 @@ resource "google_compute_instance" "diplomovka_minion"{
 
     tags = ["saltminion", "appserver", "centos"]
 
-    metadata = {
-        startup-script = "${template_file.install_salt_minion[count.index].rendered}"
-    }
+    metadata_startup_script = data.template_file.install_salt_minion[count.index].rendered
 
     boot_disk {
       initialize_params {

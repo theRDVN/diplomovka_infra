@@ -56,7 +56,6 @@ module "minion" {
   source = "./modules/minion"
 
   instance_count = "${var.instanceCount}"
-
   saltMaster = "${var.saltMaster}"
   saltEnv    = "${var.saltEnv}"
 }
