@@ -10,5 +10,6 @@ variable "saltMaster" {
 
 variable "instanceCount" {
   description = "Number of instances created"
-  default     = "1"
+  type = number
+  default     = 1
 }

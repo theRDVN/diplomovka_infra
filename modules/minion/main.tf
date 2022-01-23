@@ -1,7 +1,7 @@
 data "template_file" "install_salt_minion" {
   template = "${file("./scripts/install-salt-centos.sh")}"
   count    = "${var.instance_count}"
-
+  
   vars = {
     minionId   = "${var.name}-${format("%02d", count.index+1)}"
     hostname   = "${var.name}-${format("%02d", count.index+1)}"
@@ -16,12 +16,13 @@ resource "google_compute_instance" "diplomovka_minion"{
     zone = "europe-west1-b"
     # hostname = "diplomovka-app"
     project = "diplomovka-334620"
+    count = "${var.instance_count}"
 
     machine_type = "e2-medium"
 
     tags = ["saltminion", "appserver", "centos"]
 
-    metadata_startup_script = data.template_file.install_salt_minion[count.index].rendered
+    metadata_startup_script = "${element(data.template_file.install_salt_minion.*.rendered, count.index)}"
 
     boot_disk {
       initialize_params {

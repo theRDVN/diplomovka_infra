@@ -11,7 +11,7 @@ resource "google_compute_instance" "diplomovka_master"{
 
     boot_disk {
       initialize_params {
-          image = "ubuntu-1804-bionic-v20211214"
+          image = "ubuntu-os-cloud/ubuntu-1804-lts"
           size = "20"
       }
     }
