@@ -1,0 +1,37 @@
+name = "diplomovka"
+zone = "europe-west1-b"
+project = "diplomovka-334620"
+network_name = "default"
+# ------------------------------------
+site_ms = "diplomovka"
+# ------------------------------------
+connection_type = "ssh"
+ssh_user = "rado_pieter"
+# ----------------------------------------------
+# Globalne nastavenia master VM
+# ----------------------------------------------
+machine_type_master = "e2-standard-2"
+vm_image_master = "ubuntu-os-cloud/ubuntu-1804-lts"
+vm_disk_size_master = "20"
+internal_ip_master = "10.132.0.3" #Required - nema default hodnotu
+# SaltStack variables - master node
+saltmaster = "localhost"
+saltEnv = "common"
+common_services = ["stackstorm", "saltmaster", "saltapi"]
+salt_infra = ["master"]
+# ----------------------------------------------
+# Globalne nastavenia minion VMs
+# ----------------------------------------------
+machine_type_minion = "e2-medium"
+vm_image_minion = "centos-cloud/centos-8"
+vm_disk_size_minion = "20"
+# Za kazdu zadanu internal IP vytvori 1 instanciu  -> TBA
+internal_ip_minion = "10.132.0.4" # Required - nema default hodnotu
+instance_count = 1
+# SaltStack variables - master node
+saltEnv = "base"
+saltEnvCommon = "common"
+server_type_ms = "app"
+component_ms = [""]
+cluster_ms = "diplomovka"
+app_user_ms = "rado_pieter"
