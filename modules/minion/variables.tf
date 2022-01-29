@@ -1,7 +1,8 @@
 # VM variables
 variable "name" {
+  type    = list(string)
   description = "Name to be used on all resources as prefix"
-  default = "diplomovka"
+  default =["diplomovka-app-01"]
 }
 variable "zone" {
   description = "Zone where is VM located"

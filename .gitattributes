@@ -1,0 +1,6 @@
+# AUTO-DETECT
+* text=auto
+ 
+# SOURCE CODE
+*.sh text eol=lf
+*.cfg text eof=lf

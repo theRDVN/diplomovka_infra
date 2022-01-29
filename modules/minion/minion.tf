@@ -1,17 +1,16 @@
 resource "google_compute_instance" "diplomovka_minion"{
-  
-  name = "${var.name}-app"
+  for_each = toset(var.name)
+  name = "${each.value}"
   description = "Vytvori CentOS Salt-minion server"
   zone = "${var.zone}"
   project = "${var.project}"
-  count = "${var.instance_count}"
 
   machine_type = "${var.machine_type_minion}"
 
   tags = ["saltminion", "appserver", "centos"]
 
   metadata = {
-      sshKeys = "${var.ssh_user}:${file("C:/Users/pieterr/.ssh/id_rsa.pub")}"
+      sshKeys = "${var.ssh_user}:${file("./files/.ssh/id_rsa.pub")}"
   }
 
   boot_disk {
@@ -25,7 +24,6 @@ resource "google_compute_instance" "diplomovka_minion"{
     network = "${var.network_name}"
     access_config {
     }
-    network_ip = "${var.internal_ip_minion}"
   }
 }
 
@@ -34,18 +32,17 @@ resource "null_resource" "install_salt_centos" {
     google_compute_instance.diplomovka_minion
   ]
   
-  count = "${var.instance_count}"
-  
+  for_each = google_compute_instance.diplomovka_minion
   connection {
-  host     = "${google_compute_instance.diplomovka_minion[count.index].network_interface.0.access_config.0.nat_ip}"
+  host     = "${each.value.network_interface.0.access_config.0.nat_ip}"
   type     = "${var.connection_type}"
   user     = "${var.ssh_user}"
-  private_key = file("C:/Users/pieterr/.ssh/id_rsa")
+  private_key = file("./files/.ssh/id_rsa")
   }
 
   provisioner "file" {
   content = templatefile("./scripts/install-salt-centos.sh.tpl", {
-    hostname   = "${var.name}-${format("%02d", count.index+1)}"
+    hostname   = "${each.value.name}"
     }
   )
   destination = "/tmp/minion_setup.sh"
@@ -53,7 +50,7 @@ resource "null_resource" "install_salt_centos" {
 
   provisioner "file" {
     content = templatefile("./templates/salt-minion-conf.tpl", {
-      hostname   = "${var.name}-${format("%02d", count.index+1)}"
+      hostname   = "${each.value.name}"
       saltmaster = "${var.saltmaster}"
       env  = "${var.saltEnv}"
     }

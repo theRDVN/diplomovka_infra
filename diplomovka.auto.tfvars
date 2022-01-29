@@ -1,4 +1,5 @@
-name = "diplomovka"
+master_name = "diplomovka"
+minion_names = ["diplomovka-app-01"]
 zone = "europe-west1-b"
 project = "diplomovka-334620"
 network_name = "default"
@@ -16,7 +17,7 @@ vm_disk_size_master = "20"
 internal_ip_master = "10.132.0.3" #Required - nema default hodnotu
 # SaltStack variables - master node
 saltmaster = "localhost"
-saltEnv = "common"
+saltEnvCommon = "common"
 common_services = ["stackstorm", "saltmaster", "saltapi"]
 salt_infra = ["master"]
 # ----------------------------------------------
@@ -28,9 +29,8 @@ vm_disk_size_minion = "20"
 # Za kazdu zadanu internal IP vytvori 1 instanciu  -> TBA
 internal_ip_minion = "10.132.0.4" # Required - nema default hodnotu
 instance_count = 1
-# SaltStack variables - master node
+# SaltStack variables - minion node
 saltEnv = "base"
-saltEnvCommon = "common"
 server_type_ms = "app"
 component_ms = [""]
 cluster_ms = "diplomovka"

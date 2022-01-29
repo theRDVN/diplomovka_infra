@@ -1,7 +1,7 @@
 module "master" {
   source = "./modules/master"
 
-  name = "${var.name}"
+  name = "${var.master_name}"
   zone = "${var.zone}"
   project = "${var.project}"
   machine_type_master = "${var.machine_type_master}"
@@ -25,7 +25,7 @@ module "minion" {
     module.master
   ]
   
-  name = "${var.name}"
+  name = "${var.minion_names}"
   zone = "${var.zone}"
   project = "${var.project}"
   machine_type_minion = "${var.machine_type_minion}"

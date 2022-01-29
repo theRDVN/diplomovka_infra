@@ -1,15 +1,18 @@
+locals {
+  server_type = "ops"
+}
 resource "google_compute_instance" "diplomovka_master"{
-  name = "${var.name}-ops"
+  name = "${var.name}-${local.server_type}"
   description = "Vytvori UBUNTU Saltmaster server"
   zone = "${var.zone}"
   project = "${var.project}"
     
   machine_type = "${var.machine_type_master}"
 
-  tags = ["saltmaster", "saltminion", "stackstorm", "ubuntu"]
+  tags = ["saltmaster", "saltminion", "stackstorm", "ubuntu", "https-server"]
 
   metadata = {
-      sshKeys = "${var.ssh_user}:${file("C:/Users/pieterr/.ssh/id_rsa.pub")}"
+      sshKeys = "${var.ssh_user}:${file("./files/.ssh/id_rsa.pub")}"
    }
 
   boot_disk {
@@ -36,7 +39,7 @@ resource "null_resource" "install_salt_ubuntu" {
     host     = "${google_compute_instance.diplomovka_master.network_interface.0.access_config.0.nat_ip}"
     type     = "${var.connection_type}"
     user     = "${var.ssh_user}"
-    private_key = file("C:/Users/pieterr/.ssh/id_rsa")
+    private_key = file("./files/.ssh/id_rsa")
   }
 
   provisioner "file" {
@@ -73,11 +76,16 @@ resource "null_resource" "install_salt_ubuntu" {
     destination = "/tmp/master.conf"
   }
 
+  provisioner "file" {
+    source = "./scripts/install-st2.sh"
+    destination = "/tmp/install_st2.sh"
+  }
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/master_setup.sh",
       "sudo /tmp/master_setup.sh",
-      "salt-key -A -y"
+      "chmod +x /tmp/install_st2.sh",
+      "sudo /tmp/install_st2.sh"
     ]
   }
 }

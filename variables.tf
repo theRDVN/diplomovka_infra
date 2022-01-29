@@ -1,7 +1,12 @@
 # Common variables
-variable "name" {
+variable "master_name" {
   description = "Name to be used on all resources as prefix"
   default = "diplomovka"
+}
+variable "minion_names" {
+  type = list(string)
+  description = "Name to be used on all resources as prefix"
+  default = ["diplomovka-app-01"]
 }
 variable "zone" {
   description = "Zone where is VM located"
