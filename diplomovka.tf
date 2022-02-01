@@ -31,6 +31,7 @@ module "minion" {
   machine_type_minion = "${var.machine_type_minion}"
   vm_image_minion = "${var.vm_image_minion}"
   vm_disk_size_minion = "${var.vm_disk_size_minion}"
+  vm_major_release = "${var.vm_major_release_minion}"
   internal_ip_minion = "${var.internal_ip_minion}"
   network_name = "${var.network_name}"
   instance_count = "${var.instance_count}"

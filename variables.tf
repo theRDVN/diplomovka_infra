@@ -45,6 +45,9 @@ variable "machine_type_minion" {
 variable "vm_image_minion" {
   description = "Image used to create VM"
 }
+variable "vm_major_release_minion" {
+  description = "Major release of VM image"
+}
 variable "vm_disk_size_minion" {
   description = "Size of disk on VM"
 }

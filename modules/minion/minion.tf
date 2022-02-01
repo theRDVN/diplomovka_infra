@@ -15,7 +15,7 @@ resource "google_compute_instance" "diplomovka_minion"{
 
   boot_disk {
     initialize_params {
-        image = "${var.vm_image_minion}"
+        image = "${var.vm_image_minion}-${var.vm_major_release}"
         size = "${var.vm_disk_size_minion}"
     }
   }
@@ -43,6 +43,7 @@ resource "null_resource" "install_salt_centos" {
   provisioner "file" {
   content = templatefile("./scripts/install-salt-centos.sh.tpl", {
     hostname   = "${each.value.name}"
+    major_release = "${var.vm_major_release}"
     }
   )
   destination = "/tmp/minion_setup.sh"

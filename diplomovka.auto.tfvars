@@ -24,7 +24,8 @@ salt_infra = ["master"]
 # Globalne nastavenia minion VMs
 # ----------------------------------------------
 machine_type_minion = "e2-medium"
-vm_image_minion = "centos-cloud/centos-8"
+vm_image_minion = "centos-cloud/centos"
+vm_major_release_minion = "7"
 vm_disk_size_minion = "20"
 # Za kazdu zadanu internal IP vytvori 1 instanciu  -> TBA
 internal_ip_minion = "10.132.0.4" # Required - nema default hodnotu

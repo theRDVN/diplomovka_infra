@@ -18,7 +18,11 @@ variable "machine_type_minion" {
 }
 variable "vm_image_minion" {
   description = "Image used to create VM"
-  default = "centos-cloud/centos-8"
+  default = "centos-cloud/centos-7"
+}
+variable "vm_major_release" {
+  description = "Major release of VM image"
+  default = "7"
 }
 variable "vm_disk_size_minion" {
   description = "Size of disk on VM"
