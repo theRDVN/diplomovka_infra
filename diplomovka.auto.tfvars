@@ -1,7 +1,7 @@
 master_name = "diplomovka"
 minion_names = ["diplomovka-app-01"]
 zone = "europe-west1-b"
-project = "diplomovka-334620"
+project = "diplomovka-334621"
 network_name = "default"
 # ------------------------------------
 site_ms = "diplomovka"

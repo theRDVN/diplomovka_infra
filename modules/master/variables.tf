@@ -9,7 +9,7 @@ variable "zone" {
 }
 variable "project" {
   description = "Project in GCP"
-  default = "diplomovka-334620"
+  default = "diplomovka-334621" # OLD def = diplomovka-334620
 }
 variable "machine_type_master" {
   description = "Type of GCP VM"

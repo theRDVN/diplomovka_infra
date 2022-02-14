@@ -45,3 +45,22 @@ module "minion" {
   connection_type = "${var.connection_type}"
   ssh_user = "${var.ssh_user}"
 }
+
+resource "null_resource" "startup_scripts" {
+  depends_on = [
+    module.master,
+    module.minion
+  ]
+
+  connection {
+    host     = "${module.master.master_external_ip}"
+    type     = "${var.connection_type}"
+    user     = "${var.ssh_user}"
+    private_key = file("./files/.ssh/id_rsa")
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo salt-key -A -y",
+    ]
+  }
+}
