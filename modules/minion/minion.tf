@@ -7,7 +7,7 @@ resource "google_compute_instance" "diplomovka_minion"{
 
   machine_type = "${var.machine_type_minion}"
 
-  tags = ["saltminion", "appserver", "centos"]
+  tags = ["saltminion", "appserver", "centos", "https-server", "http-server"]
 
   metadata = {
       sshKeys = "${var.ssh_user}:${file("./files/.ssh/id_rsa.pub")}"

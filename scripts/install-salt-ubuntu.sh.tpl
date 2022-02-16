@@ -6,7 +6,6 @@ echo "Set hostname to ${hostname}" >> /tmp/init.log
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common  -y
 sudo apt-get update
 sudo apt-get install docker-ce  -y
-sudo apt-get install python-pip -y
 echo "Installed dependencies" >> /tmp/init.log
 sudo curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/18.04/amd64/latest/salt-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg arch=amd64] https://repo.saltproject.io/py3/ubuntu/18.04/amd64/latest bionic main" | sudo tee /etc/apt/sources.list.d/salt.list
