@@ -98,7 +98,7 @@ resource "google_compute_firewall" "ops_firewall_rules" {
 
   allow {
     protocol  = "tcp"
-    ports     = ["80", "8080", "443"]
+    ports     = ["80", "8080", "443", "9101"]
   }
 
   source_ranges = ["0.0.0.0/0"]
