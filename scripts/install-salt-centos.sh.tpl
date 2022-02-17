@@ -15,4 +15,5 @@ sudo cp /tmp/minion.conf /etc/salt/minion.d/minion.conf
 sudo cp /tmp/grains /etc/salt/grains
 sudo systemctl enable salt-minion.service
 sudo systemctl restart salt-minion.service
+sudo systemctl start docker
 echo "Cloud init ended at `date`" >> /tmp/init.log

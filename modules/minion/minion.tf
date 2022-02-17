@@ -81,3 +81,18 @@ resource "null_resource" "install_salt_centos" {
     ]
   }
 }
+
+resource "google_compute_firewall" "app_firewall_rules" {
+  project     = "${var.project}"
+  name        = "default-allow--app-external-http-trafic"
+  network     = "${var.network_name}"
+  description = "Povolenie http portu 80 a 8080 pre aplikacie na aplikacnych serveroch"
+
+  allow {
+    protocol  = "tcp"
+    ports     = ["80", "8080"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags = ["appserver", "http-server", "https-server"]
+}

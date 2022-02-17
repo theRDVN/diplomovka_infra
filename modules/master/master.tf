@@ -9,7 +9,7 @@ resource "google_compute_instance" "diplomovka_master"{
     
   machine_type = "${var.machine_type_master}"
 
-  tags = ["saltmaster", "saltminion", "stackstorm", "ubuntu", "https-server"]
+  tags = ["saltmaster", "saltminion", "stackstorm", "ubuntu", "https-server", "http-server"]
 
   metadata = {
       sshKeys = "${var.ssh_user}:${file("./files/.ssh/id_rsa.pub")}"
@@ -88,4 +88,19 @@ resource "null_resource" "install_salt_ubuntu" {
       "sudo /tmp/install_st2.sh"
     ]
   }
+}
+
+resource "google_compute_firewall" "ops_firewall_rules" {
+  project     = "${var.project}"
+  name        = "default-allow-external-http-trafic"
+  network     = "${var.network_name}"
+  description = "Povolenie range-u portov na OPS serveri"
+
+  allow {
+    protocol  = "tcp"
+    ports     = ["80", "8080", "443"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags = ["stackstorm", "http-server", "https-server"]
 }
