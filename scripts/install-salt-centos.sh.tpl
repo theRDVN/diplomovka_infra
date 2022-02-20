@@ -6,7 +6,7 @@ echo "Set hostname to ${hostname}" >> /tmp/init.log
 sudo rpm --import https://repo.saltproject.io/py3/redhat/${major_release}/x86_64/latest/SALTSTACK-GPG-KEY.pub >> /tmp/init.log
 curl -fsSL https://repo.saltproject.io/py3/redhat/${major_release}/x86_64/latest.repo | sudo tee /etc/yum.repos.d/salt.repo
 sudo yum clean expire-cache
-yum install -y salt-minion telnet docker docker-compose
+yum install -y salt-minion telnet docker docker-compose git
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo "Installed saltstack services" >> /tmp/init.log
@@ -16,4 +16,6 @@ sudo cp /tmp/grains /etc/salt/grains
 sudo systemctl enable salt-minion.service
 sudo systemctl restart salt-minion.service
 sudo systemctl start docker
+cd /opt
+sudo git clone https://github.com/theRDVN/diplomovka_docker_app.git
 echo "Cloud init ended at `date`" >> /tmp/init.log

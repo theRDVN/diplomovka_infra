@@ -80,6 +80,18 @@ resource "null_resource" "install_salt_ubuntu" {
     source = "./scripts/install-st2.sh"
     destination = "/tmp/install_st2.sh"
   }
+  provisioner "file" {
+    source = "./templates/salt-master-gitfs.conf.tpl"
+    destination = "/tmp/gitfs.conf"
+  }
+provisioner "file" {
+    source = "./templates/salt-master-gitfs_set.conf.tpl"
+    destination = "/tmp/gitfs_set.conf"
+  }
+  provisioner "file" {
+    source = "./templates/salt-master-roots.conf.tpl"
+    destination = "/tmp/roots.conf"
+  }
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/master_setup.sh",

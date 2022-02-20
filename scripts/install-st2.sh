@@ -62,3 +62,5 @@ sudo rm /etc/nginx/conf.d/default.conf
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo cp /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/
 sudo service nginx restart
+sudo apt install python-pip -y
+sudo st2 pack install salt https://github.com/theRDVN/diplomovka_ops_st2_pack.git
