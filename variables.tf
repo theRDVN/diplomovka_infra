@@ -12,6 +12,9 @@ variable "zone" {
 variable "project" {
   description = "Project in GCP"
 }
+variable "region" {
+  description = "Region of project in GCP"
+}
 variable "network_name" {
   description = "Network name"
 }
@@ -85,4 +88,24 @@ variable "common_services" {
 }
 variable "salt_infra" {
   description = "Salt infra"
+}
+# DNS zone variables
+variable "dns_zone_name" {
+  description = "DNS zone name (id)"
+}
+variable "dns_zone" {
+  description = "DNS zone name (URL)"
+}   
+variable "dns_zone_visibility" {
+  description = "Visibility of DNS zone"
+}
+variable "dns_zone_description" {
+  description = "Description of DNS zone"
+}
+# DNS Record set - publish
+variable "record_set_A_type" {
+  description = "Record set type"
+}
+variable "record_set_ttl" {
+  description = "Record set TTL"
 }

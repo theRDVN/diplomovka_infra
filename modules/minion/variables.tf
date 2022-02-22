@@ -1,8 +1,7 @@
 # VM variables
 variable "name" {
-  type    = list(string)
   description = "Name to be used on all resources as prefix"
-  default =["diplomovka-app-01"]
+  default = "diplomovka-app-01"
 }
 variable "zone" {
   description = "Zone where is VM located"
@@ -29,6 +28,9 @@ variable "vm_disk_size_minion" {
   default = "20"
 }
 variable "internal_ip_minion" {
+  description = "Internal IP for salt-master VM"
+}
+variable "app_static_ip" {
   description = "Internal IP for salt-master VM"
 }
 variable "network_name" {
@@ -77,4 +79,23 @@ variable "connection_type" {
 variable "ssh_user" {
   default = "rado_pieter"
   description = ""
+}
+variable "master_external_ip" {
+  description = "Master IP"
+}
+variable "dns_zone" {
+  description = "DNS zone"
+  default = "pieterr.net."
+}
+variable "dns_zone_name" {
+  description = "Type of connection to VM"
+  default = "pieterr-net"
+}
+variable "record_set_A_type" {
+  default = "A"
+  description = "Record set type"
+}
+variable "record_set_ttl" {
+  description = "TTL for Record set"
+  default = 300
 }

@@ -1,6 +1,5 @@
 resource "google_compute_instance" "diplomovka_minion"{
-  for_each = toset(var.name)
-  name = "${each.value}"
+  name = "${var.name}"
   description = "Vytvori CentOS Salt-minion server"
   zone = "${var.zone}"
   project = "${var.project}"
@@ -23,6 +22,7 @@ resource "google_compute_instance" "diplomovka_minion"{
   network_interface {
     network = "${var.network_name}"
     access_config {
+      nat_ip = "${var.app_static_ip}"
     }
   }
 }
@@ -31,10 +31,8 @@ resource "null_resource" "install_salt_centos" {
   depends_on = [
     google_compute_instance.diplomovka_minion
   ]
-  
-  for_each = google_compute_instance.diplomovka_minion
   connection {
-  host     = "${each.value.network_interface.0.access_config.0.nat_ip}"
+  host     = "${google_compute_instance.diplomovka_minion.network_interface.0.access_config.0.nat_ip}"
   type     = "${var.connection_type}"
   user     = "${var.ssh_user}"
   private_key = file("./files/.ssh/id_rsa")
@@ -42,7 +40,7 @@ resource "null_resource" "install_salt_centos" {
 
   provisioner "file" {
   content = templatefile("./scripts/install-salt-centos.sh.tpl", {
-    hostname   = "${each.value.name}"
+    hostname   = "${google_compute_instance.diplomovka_minion.name}"
     major_release = "${var.vm_major_release}"
     }
   )
@@ -51,14 +49,13 @@ resource "null_resource" "install_salt_centos" {
 
   provisioner "file" {
     content = templatefile("./templates/salt-minion-conf.tpl", {
-      hostname   = "${each.value.name}"
+      hostname   = "${google_compute_instance.diplomovka_minion.name}"
       saltmaster = "${var.saltmaster}"
       env  = "${var.saltEnv}"
     }
   )
   destination = "/tmp/minion.conf"
   }
-
   provisioner "file" {
     content = templatefile("./templates/salt-minion-grains.tpl", {
       env          = "${var.saltEnv}"
@@ -81,13 +78,27 @@ resource "null_resource" "install_salt_centos" {
     ]
   }
 }
-
+resource "null_resource" "accept_minion_keys" {
+  depends_on = [
+    null_resource.install_salt_centos
+  ]
+  connection {
+  host     = "${var.master_external_ip}"
+  type     = "${var.connection_type}"
+  user     = "${var.ssh_user}"
+  private_key = file("./files/.ssh/id_rsa")
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo salt-key -A -y"
+    ]
+  }
+}
 resource "google_compute_firewall" "app_firewall_rules" {
   project     = "${var.project}"
   name        = "default-allow--app-external-http-trafic"
   network     = "${var.network_name}"
   description = "Povolenie http portu 80 a 8080 pre aplikacie na aplikacnych serveroch"
-
   allow {
     protocol  = "tcp"
     ports     = ["80", "8080"]
@@ -95,4 +106,16 @@ resource "google_compute_firewall" "app_firewall_rules" {
 
   source_ranges = ["0.0.0.0/0"]
   target_tags = ["appserver", "http-server", "https-server"]
+}
+resource "google_dns_record_set" "app_pieterr_dns" {
+  
+  depends_on = [
+    google_compute_instance.diplomovka_minion
+  ]
+
+  name         = "${var.name}.${var.dns_zone}"
+  managed_zone = "${var.dns_zone_name}"
+  type         = "${var.record_set_A_type}"
+  ttl          = "${var.record_set_ttl}"
+  rrdatas      = ["${var.app_static_ip}"]
 }

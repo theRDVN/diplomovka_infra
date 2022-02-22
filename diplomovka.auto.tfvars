@@ -2,6 +2,7 @@ master_name = "diplomovka"
 minion_names = ["diplomovka-app-01"]
 zone = "europe-west1-b"
 project = "diplomovka-334621"
+region = "europe-west1"
 network_name = "default"
 # ------------------------------------
 site_ms = "diplomovka"
@@ -33,6 +34,14 @@ instance_count = 1
 # SaltStack variables - minion node
 saltEnv = "base"
 server_type_ms = "app"
-component_ms = [""]
+component_ms = ["docker, java"]
 cluster_ms = "diplomovka"
-app_user_ms = "rado_pieter"
+app_user_ms = "docker"
+# DNS Zone variables
+dns_zone_name = "pieterr-net"
+dns_zone = "pieterr.net."
+dns_zone_visibility = "public"
+dns_zone_description = "DNS zone for domain: pieterr.net"
+# DNS Record sets variables
+record_set_A_type = "A"
+record_set_ttl = 600

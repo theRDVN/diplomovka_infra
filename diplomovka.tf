@@ -1,5 +1,45 @@
+resource "google_compute_address" "ops-static-ip" {
+  name     = "${var.master_name}"
+  region = "${var.region}"
+  project = "${var.project}"
+}
+
+resource "google_compute_address" "appserver-static-ip" {
+  for_each = toset(var.minion_names)
+  name     = "${each.value}"
+  region = "${var.region}"
+  project = "${var.project}"
+}
+
+module "pieterr_dns" {
+  source = "./modules/dns_zone"
+
+  name = "${var.dns_zone_name}"
+  dns_name = "${var.dns_zone}"
+  project = "${var.project}"
+  visibility = "${var.dns_zone_visibility}"
+  description = "${var.dns_zone_description}"
+}
+
+resource "google_dns_record_set" "ops_pieterr_dns" {
+  
+  depends_on = [
+    google_compute_address.ops-static-ip
+  ]
+
+  name         = "ops.${var.dns_zone}"
+  managed_zone = "${var.dns_zone_name}"
+  type         = "${var.record_set_A_type}"
+  ttl          = "${var.record_set_ttl}"
+  rrdatas      = [google_compute_address.ops-static-ip.address]
+}
 module "master" {
   source = "./modules/master"
+
+  depends_on = [
+    module.pieterr_dns,
+    google_compute_address.ops-static-ip
+  ]
 
   name = "${var.master_name}"
   zone = "${var.zone}"
@@ -16,16 +56,18 @@ module "master" {
   site_ms = "${var.site_ms}"
   connection_type = "${var.connection_type}"
   ssh_user = "${var.ssh_user}"
+  ops_static_ip = "${google_compute_address.ops-static-ip.address}"
 }
 
 module "minion" {
   source = "./modules/minion"
-
+  for_each = toset(var.minion_names)
   depends_on = [
-    module.master
+    module.master,
+    google_compute_address.appserver-static-ip
   ]
   
-  name = "${var.minion_names}"
+  name = "${each.value}"
   zone = "${var.zone}"
   project = "${var.project}"
   machine_type_minion = "${var.machine_type_minion}"
@@ -44,23 +86,10 @@ module "minion" {
   site_ms = "${var.site_ms}"
   connection_type = "${var.connection_type}"
   ssh_user = "${var.ssh_user}"
-}
-
-resource "null_resource" "startup_scripts" {
-  depends_on = [
-    module.master,
-    module.minion
-  ]
-
-  connection {
-    host     = "${module.master.master_external_ip}"
-    type     = "${var.connection_type}"
-    user     = "${var.ssh_user}"
-    private_key = file("./files/.ssh/id_rsa")
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo salt-key -A -y",
-    ]
-  }
+  app_static_ip = "${google_compute_address.appserver-static-ip[each.key].address}"
+  master_external_ip = "${module.master.master_external_ip}"
+  dns_zone = "${var.dns_zone}"
+  dns_zone_name = "${var.dns_zone_name}"
+  record_set_A_type = "${var.record_set_A_type}"
+  record_set_ttl = "${var.record_set_ttl}"
 }

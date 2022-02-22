@@ -26,6 +26,9 @@ variable "vm_disk_size_master" {
 variable "internal_ip_master" {
   description = "Internal IP for salt-master VM"
 }
+variable "ops_static_ip" {
+  description = "Internal IP for salt-master VM"
+}
 variable "network_name" {
   description = "Network name"
   default = "default"

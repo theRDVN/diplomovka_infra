@@ -24,7 +24,8 @@ resource "google_compute_instance" "diplomovka_master"{
 
   network_interface {
     network = "${var.network_name}"
-    access_config { 
+    access_config {
+      nat_ip = "${var.ops_static_ip}"
     }
     network_ip = "${var.internal_ip_master}"
   }
@@ -98,6 +99,11 @@ provisioner "file" {
       "sudo /tmp/master_setup.sh",
       "chmod +x /tmp/install_st2.sh",
       "sudo /tmp/install_st2.sh"
+    ]
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo salt-key -A -y",
     ]
   }
 }
