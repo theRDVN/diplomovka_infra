@@ -4,9 +4,15 @@ file_roots:
   common:
     - /opt/salt/common/artifacts
     - /opt/salt/common/states
+    - /opt/salt/formulas/diplomovka_salt-formula-linux
+    - /opt/salt/formulas/diplomovka_salt-formula-saltmanage
+    - /opt/salt/states/diplomovka_shared-all-salt-states
   base:
     - /opt/salt/base/artifacts
     - /opt/salt/base/states
+    - /opt/salt/formulas/diplomovka_salt-formula-linux
+    - /opt/salt/formulas/diplomovka_salt-formula-saltmanage
+    - /opt/salt/states/diplomovka_shared-all-salt-states
 
 pillar_roots:
   common:

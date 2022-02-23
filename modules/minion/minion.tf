@@ -107,14 +107,29 @@ resource "google_compute_firewall" "app_firewall_rules" {
   source_ranges = ["0.0.0.0/0"]
   target_tags = ["appserver", "http-server", "https-server"]
 }
+resource "google_dns_managed_zone" "app_pieterr_net" {
+  
+  depends_on = [
+    null_resource.install_salt_centos
+  ]
+
+  name        = "${var.name}-${var.dns_zone_name}"
+  dns_name    = "${var.dns_zone}"
+  project = "${var.project}"
+  visibility = "${var.dns_zone_visibility}"
+  description = "${var.dns_zone_description}"
+  dnssec_config {
+    state = "off"
+  }
+}
 resource "google_dns_record_set" "app_pieterr_dns" {
   
   depends_on = [
-    google_compute_instance.diplomovka_minion
+    google_dns_managed_zone.app_pieterr_net
   ]
 
   name         = "${var.name}.${var.dns_zone}"
-  managed_zone = "${var.dns_zone_name}"
+  managed_zone = "${var.name}-${var.dns_zone_name}"
   type         = "${var.record_set_A_type}"
   ttl          = "${var.record_set_ttl}"
   rrdatas      = ["${var.app_static_ip}"]

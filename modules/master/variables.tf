@@ -63,3 +63,23 @@ variable "ssh_user" {
   description = "User account for ssh connection to salt-master VM"
   default = "rado_pieter"
 }
+# DNS zone variables
+variable "dns_zone_name" {
+  description = "DNS zone name (id)"
+}
+variable "dns_zone" {
+  description = "DNS zone name (URL)"
+}   
+variable "dns_zone_visibility" {
+  description = "Visibility of DNS zone"
+}
+variable "dns_zone_description" {
+  description = "Description of DNS zone"
+}
+# DNS Record set - publish
+variable "record_set_A_type" {
+  description = "Record set type"
+}
+variable "record_set_ttl" {
+  description = "Record set TTL"
+}

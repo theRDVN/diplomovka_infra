@@ -83,19 +83,23 @@ variable "ssh_user" {
 variable "master_external_ip" {
   description = "Master IP"
 }
-variable "dns_zone" {
-  description = "DNS zone"
-  default = "pieterr.net."
-}
+# DNS zone variables
 variable "dns_zone_name" {
-  description = "Type of connection to VM"
-  default = "pieterr-net"
+  description = "DNS zone name (id)"
 }
+variable "dns_zone" {
+  description = "DNS zone name (URL)"
+}   
+variable "dns_zone_visibility" {
+  description = "Visibility of DNS zone"
+}
+variable "dns_zone_description" {
+  description = "Description of DNS zone"
+}
+# DNS Record set - publish
 variable "record_set_A_type" {
-  default = "A"
   description = "Record set type"
 }
 variable "record_set_ttl" {
-  description = "TTL for Record set"
-  default = 300
+  description = "Record set TTL"
 }

@@ -122,3 +122,26 @@ resource "google_compute_firewall" "ops_firewall_rules" {
   source_ranges = ["0.0.0.0/0"]
   target_tags = ["stackstorm", "http-server", "https-server"]
 }
+
+resource "google_dns_managed_zone" "ops_pieterr_net" {
+  name        = "${local.server_type}-${var.dns_zone_name}"
+  dns_name    = "${var.dns_zone}"
+  project = "${var.project}"
+  visibility = "${var.dns_zone_visibility}"
+  description = "${var.dns_zone_description}"
+  dnssec_config {
+    state = "off"
+  }
+}
+resource "google_dns_record_set" "ops_pieterr_dns" {
+  
+  depends_on = [
+    google_dns_managed_zone.ops_pieterr_net
+  ]
+
+  name         = "${local.server_type}.${var.dns_zone}"
+  managed_zone = "${local.server_type}-${var.dns_zone_name}"
+  type         = "${var.record_set_A_type}"
+  ttl          = "${var.record_set_ttl}"
+  rrdatas      = [var.ops_static_ip]
+}
