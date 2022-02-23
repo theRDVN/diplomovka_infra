@@ -22,7 +22,6 @@ resource "google_compute_instance" "diplomovka_minion"{
   network_interface {
     network = "${var.network_name}"
     access_config {
-      nat_ip = "${var.app_static_ip}"
     }
   }
 }
@@ -90,13 +89,14 @@ resource "null_resource" "accept_minion_keys" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo salt-key -A -y"
+      "sudo salt-key -A -y",
+      "sleep 10;"
     ]
   }
 }
 resource "google_compute_firewall" "app_firewall_rules" {
   project     = "${var.project}"
-  name        = "default-allow--app-external-http-trafic"
+  name        = "default-allow-app-external-http-trafic"
   network     = "${var.network_name}"
   description = "Povolenie http portu 80 a 8080 pre aplikacie na aplikacnych serveroch"
   allow {
@@ -110,12 +110,12 @@ resource "google_compute_firewall" "app_firewall_rules" {
 resource "google_dns_record_set" "app_pieterr_dns" {
   
   depends_on = [
-    google_compute_instance.diplomovka_minion
+    null_resource.install_salt_centos
   ]
 
   name         = "${var.name}.${var.dns_zone}"
   managed_zone = "${var.dns_zone_name}"
   type         = "${var.record_set_A_type}"
   ttl          = "${var.record_set_ttl}"
-  rrdatas      = ["${var.app_static_ip}"]
+  rrdatas      = ["${google_compute_instance.diplomovka_minion.network_interface.0.access_config.0.nat_ip}"]
 }

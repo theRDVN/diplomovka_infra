@@ -30,9 +30,6 @@ variable "vm_disk_size_minion" {
 variable "internal_ip_minion" {
   description = "Internal IP for salt-master VM"
 }
-variable "app_static_ip" {
-  description = "Internal IP for salt-master VM"
-}
 variable "network_name" {
   description = "Network name"
   default = "default"

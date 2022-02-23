@@ -25,7 +25,6 @@ resource "google_compute_instance" "diplomovka_master"{
   network_interface {
     network = "${var.network_name}"
     access_config {
-      nat_ip = "${var.ops_static_ip}"
     }
     network_ip = "${var.internal_ip_master}"
   }
@@ -104,6 +103,7 @@ provisioner "file" {
   provisioner "remote-exec" {
     inline = [
       "sudo salt-key -A -y",
+      "sleep 10;"
     ]
   }
 }
@@ -121,4 +121,17 @@ resource "google_compute_firewall" "ops_firewall_rules" {
 
   source_ranges = ["0.0.0.0/0"]
   target_tags = ["stackstorm", "http-server", "https-server"]
+}
+
+resource "google_dns_record_set" "ops_pieterr_dns" {
+  
+  depends_on = [
+    null_resource.install_salt_ubuntu
+  ]
+
+  name         = "${local.server_type}.${var.dns_zone}"
+  managed_zone = "${var.dns_zone_name}"
+  type         = "${var.record_set_A_type}"
+  ttl          = "${var.record_set_ttl}"
+  rrdatas      = ["${google_compute_instance.diplomovka_master.network_interface.0.access_config.0.nat_ip}"]
 }

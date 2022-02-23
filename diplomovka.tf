@@ -1,16 +1,3 @@
-resource "google_compute_address" "ops-static-ip" {
-  name     = "${var.master_name}"
-  region = "${var.region}"
-  project = "${var.project}"
-}
-
-resource "google_compute_address" "appserver-static-ip" {
-  for_each = toset(var.minion_names)
-  name     = "${each.value}"
-  region = "${var.region}"
-  project = "${var.project}"
-}
-
 module "pieterr_dns" {
   source = "./modules/dns_zone"
 
@@ -21,24 +8,11 @@ module "pieterr_dns" {
   description = "${var.dns_zone_description}"
 }
 
-resource "google_dns_record_set" "ops_pieterr_dns" {
-  
-  depends_on = [
-    google_compute_address.ops-static-ip
-  ]
-
-  name         = "ops.${var.dns_zone}"
-  managed_zone = "${var.dns_zone_name}"
-  type         = "${var.record_set_A_type}"
-  ttl          = "${var.record_set_ttl}"
-  rrdatas      = [google_compute_address.ops-static-ip.address]
-}
 module "master" {
   source = "./modules/master"
 
   depends_on = [
-    module.pieterr_dns,
-    google_compute_address.ops-static-ip
+    module.pieterr_dns
   ]
 
   name = "${var.master_name}"
@@ -56,15 +30,18 @@ module "master" {
   site_ms = "${var.site_ms}"
   connection_type = "${var.connection_type}"
   ssh_user = "${var.ssh_user}"
-  ops_static_ip = "${google_compute_address.ops-static-ip.address}"
+  dns_zone = "${var.dns_zone}"
+  dns_zone_name = "${var.dns_zone_name}"
+  record_set_A_type = "${var.record_set_A_type}"
+  record_set_ttl = "${var.record_set_ttl}"
 }
-
 module "minion" {
   source = "./modules/minion"
   for_each = toset(var.minion_names)
+
   depends_on = [
-    module.master,
-    google_compute_address.appserver-static-ip
+    module.pieterr_dns,
+    module.master
   ]
   
   name = "${each.value}"
@@ -86,7 +63,6 @@ module "minion" {
   site_ms = "${var.site_ms}"
   connection_type = "${var.connection_type}"
   ssh_user = "${var.ssh_user}"
-  app_static_ip = "${google_compute_address.appserver-static-ip[each.key].address}"
   master_external_ip = "${module.master.master_external_ip}"
   dns_zone = "${var.dns_zone}"
   dns_zone_name = "${var.dns_zone_name}"
