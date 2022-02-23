@@ -90,7 +90,9 @@ resource "null_resource" "accept_minion_keys" {
   provisioner "remote-exec" {
     inline = [
       "sudo salt-key -A -y",
-      "sleep 10;"
+      "sleep 5;",
+      "sudo salt ${google_compute_instance.diplomovka_minion.name} state.apply",
+      "sleep 5;"  
     ]
   }
 }
