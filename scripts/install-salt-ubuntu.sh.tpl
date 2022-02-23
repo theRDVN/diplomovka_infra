@@ -25,6 +25,13 @@ sudo mkdir /opt/salt/common/pillars -p
 sudo mkdir /opt/salt/base/states -p
 sudo mkdir /opt/salt/base/artifacts -p
 sudo mkdir /opt/salt/base/pillars -p
+sudo mkdir /opt/salt/states -p
+sudo mkdir /opt/salt/formulas -p
+cd /opt/salt/states
+sudo git clone https://github.com/theRDVN/diplomovka_shared-all-salt-states.git
+cd /opt/salt/formulas
+sudo git clone https://github.com/theRDVN/diplomovka_salt-formula-saltmanage.git
+sudo git clone https://github.com/theRDVN/diplomovka_salt-formula-linux.git
 # Start and enable service
 sudo apt-get install python3-pygit2 -y
 sleep 5;
