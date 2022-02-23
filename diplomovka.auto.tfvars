@@ -44,4 +44,4 @@ dns_zone_visibility = "public"
 dns_zone_description = "DNS zone for domain: pieterr.net"
 # DNS Record sets variables
 record_set_A_type = "A"
-record_set_ttl = 300
+record_set_ttl = 60
