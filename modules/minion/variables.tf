@@ -1,7 +1,7 @@
 # VM variables
 variable "name" {
   description = "Name to be used on all resources as prefix"
-  default = "diplomovka-app-01"
+  default = "dp-app-01"
 }
 variable "zone" {
   description = "Zone where is VM located"

@@ -103,7 +103,7 @@ provisioner "file" {
   provisioner "remote-exec" {
     inline = [
       "sudo salt-key -A -y",
-      "sleep 5;",
+      "sleep 10;",
       "sudo salt ${google_compute_instance.diplomovka_master.name} state.apply",
       "sleep 5;"      
     ]
@@ -131,7 +131,7 @@ resource "google_dns_record_set" "ops_pieterr_dns" {
     null_resource.install_salt_ubuntu
   ]
 
-  name         = "${local.server_type}.${var.dns_zone}"
+  name         = "${google_compute_instance.diplomovka_master.name}.${var.dns_zone}"
   managed_zone = "${var.dns_zone_name}"
   type         = "${var.record_set_A_type}"
   ttl          = "${var.record_set_ttl}"
